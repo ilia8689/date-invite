@@ -678,18 +678,16 @@
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
 
-            // Submit form directly (not AJAX) via hidden iframe
+            // Submit form via hidden iframe
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = 'https://formsubmit.co/iliashapovalov53@gmail.com';
+            form.action = 'https://formsubmit.co/8c25f4a6fcd03cd60aac705e2315ce5a';
             form.target = 'hiddenFrame';
             form.style.display = 'none';
 
             const fields = {
-                '_subject': '💌 Ответ на приглашение!',
                 '_captcha': 'false',
                 '_template': 'table',
-                '_next': window.location.href,
                 'Ответ': { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
                 'Дата': new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
                 'Куда': state.place,

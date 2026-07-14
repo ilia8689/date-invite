@@ -677,26 +677,18 @@
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
 
-            // Submit form to hidden iframe (ALWAYS works, even HTTPS→HTTP)
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'http://2.26.125.67:8888/';
-            form.target = 'hiddenFrame';
-            form.style.display = 'none';
-            const fields = {
-                'Ответ': { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
-                'Дата': new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-                'Куда': state.place,
+            // Send via fetch to Cloudflare Tunnel HTTPS endpoint
+            const data = {
+                Ответ: { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
+                Дата: new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+                Куда: state.place,
                 'Любимый цвет': state.colorName
             };
-            for (const [name, value] of Object.entries(fields)) {
-                const input = document.createElement('input');
-                input.type = 'hidden'; input.name = name; input.value = value;
-                form.appendChild(input);
-            }
-            document.body.appendChild(form);
-            form.submit();
-            setTimeout(() => form.remove(), 3000);
+            fetch('https://finds-witch-below-mandatory.trycloudflare.com/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(function(){});
         });
 
         // === Confetti ===

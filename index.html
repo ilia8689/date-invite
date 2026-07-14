@@ -676,18 +676,19 @@
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
 
-            // Save to VPS via sendBeacon (bypasses CORS/mixed-content)
-            const fd = JSON.stringify({
+            // Send to VPS via fetch with no-cors (works from HTTPS)
+            const fd = {
                 Ответ: { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
                 Дата: new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
                 Куда: state.place,
                 'Любимый цвет': state.colorName
-            });
-            navigator.sendBeacon('http://2.26.125.67:8888/', new Blob([fd], {type: 'application/json'}));
+            };
+            fetch('http://2.26.125.67:8888/', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(fd)
-            }).catch(function(e){});
+            }).catch(function(){});
         });
 
         // === Confetti ===

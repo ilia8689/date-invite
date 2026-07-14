@@ -684,11 +684,18 @@
             formData.append('Страница', window.location.href);
 
             // Send to Telegram
-            const msg = `💌 <b>Новый ответ!</b>\n\n<b>Ответ:</b> ${formData.get('Ответ')}\n<b>Дата:</b> ${formData.get('Дата')}\n<b>Куда:</b> ${formData.get('Куда')}\n<b>Цвет:</b> ${formData.get('Любимый цвет')}\n<b>Страница:</b> ${formData.get('Страница')}`;
-            fetch('https://api.telegram.org/bot8192848840:AAH1vGbRZZ4tPmPco6irMqWj20Yx6WSPw1M/sendMessage', {
+            const msg = `💌 <b>Новый ответ!</b>
+
+<b>Ответ:</b> ${formData.get('Ответ')}
+<b>Дата:</b> ${formData.get('Дата')}
+<b>Куда:</b> ${formData.get('Куда')}
+<b>Любимый цвет:</b> ${formData.get('Любимый цвет')}
+<b>Страница:</b> ${formData.get('Страница')}`;
+
+            fetch('https://api.telegram.org/bot8732922965:AAE9iaEstldodQOdeangbH-gbXjh6weyOxk/sendMessage', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: '720339455', text: msg, parse_mode: 'HTML' })
+                body: JSON.stringify({ chat_id: '748954266', text: msg, parse_mode: 'HTML' })
             }).catch(function(){});
 
             // Show thank you

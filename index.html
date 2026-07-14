@@ -683,7 +683,7 @@
             formData.append('Любимый цвет', state.colorName);
             formData.append('Страница', window.location.href);
 
-            // Send to Telegram
+            // Send to Telegram via CORS proxy
             const msg = `💌 <b>Новый ответ!</b>
 
 <b>Ответ:</b> ${formData.get('Ответ')}
@@ -692,11 +692,14 @@
 <b>Любимый цвет:</b> ${formData.get('Любимый цвет')}
 <b>Страница:</b> ${formData.get('Страница')}`;
 
-            fetch('https://api.telegram.org/bot8732922965:AAE9iaEstldodQOdeangbH-gbXjh6weyOxk/sendMessage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: '748954266', text: msg, parse_mode: 'HTML' })
-            }).catch(function(){});
+            const tgToken = '8732922965:AAE9iaEstldodQOdeangbH-gbXjh6weyOxk';
+            const tgUrl = `https://api.telegram.org/bot${tgToken}/sendMessage`;
+            const tgBody = JSON.stringify({ chat_id: '748954266', text: msg, parse_mode: 'HTML' });
+
+            // Try direct first, fallback to CORS proxy
+            fetch(tgUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: tgBody, mode: 'no-cors' }).catch(function(){});
+            // Also try with CORS proxy as backup
+            fetch(`https://corsproxy.io/?${encodeURIComponent(tgUrl)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: tgBody }).catch(function(){});
 
             // Show thank you
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));

@@ -167,6 +167,12 @@
             border-color: #e74c3c;
         }
 
+        .answer-btn[data-value="maybe"]:hover {
+            background: #f39c12;
+            color: #fff;
+            border-color: #f39c12;
+        }
+
         .answer-btn[data-value="no"] {
             color: #666;
             border-color: #ddd;
@@ -176,6 +182,31 @@
             background: #666;
             color: #fff;
             border-color: #666;
+        }
+
+        /* Place buttons */
+        .place-btn {
+            padding: 14px 24px;
+            border: 2px solid #e8e8e8;
+            border-radius: 16px;
+            background: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            min-width: 90px;
+        }
+
+        .place-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .place-btn.selected {
+            background: #d6336c;
+            color: #fff;
+            border-color: #d6336c;
         }
 
         .answer-btn[data-value="maybe"] {
@@ -326,8 +357,17 @@
             </div>
 
             <div class="form-group">
-                <label>Что скажешь? 💬</label>
-                <textarea name="Сообщение" placeholder="Напиши мне пару слов... я буду очень рад ❤️" rows="3"></textarea>
+                <label>Куда хочешь пойти? 🎯</label>
+                <div class="answers" id="placeGroup">
+                    <button type="button" class="place-btn" data-value="Кино">🎬 Кино</button>
+                    <button type="button" class="place-btn" data-value="Ресторан">🍝 Ресторан</button>
+                    <button type="button" class="place-btn" data-value="Качалка">🏋️ Качалка</button>
+                    <button type="button" class="place-btn" id="otherPlaceBtn" data-value="">✏️ Свой вариант</button>
+                </div>
+                <input type="hidden" name="Куда" id="placeInput" value="">
+                <div style="margin-top:10px;display:none;" id="otherPlaceDiv">
+                    <input type="text" name="Свой вариант" id="otherPlaceInput" placeholder="Напиши свой вариант ✨" style="width:100%;padding:12px 16px;border:2px solid #e8e8e8;border-radius:12px;font-size:15px;font-family:inherit;outline:none;background:#fafafa;box-sizing:border-box;">
+                </div>
             </div>
 
             <div class="form-group">
@@ -336,6 +376,7 @@
             </div>
 
             <div class="error-msg" id="errorMsg">Пожалуйста, выбери ответ ❤️</div>
+            <div class="error-msg" id="errorPlace" style="color:#e74c3c;font-size:13px;margin-top:8px;display:none;">И скажи куда хочешь пойти 🎯</div>
 
             <button type="submit" class="submit-btn" id="submitBtn">
                 ✨ Отправить ответ
@@ -385,12 +426,52 @@
             });
         });
 
+        // === Place selection ===
+        const placeBtns = document.querySelectorAll('.place-btn');
+        const placeInput = document.getElementById('placeInput');
+        const otherPlaceDiv = document.getElementById('otherPlaceDiv');
+        const otherPlaceInput = document.getElementById('otherPlaceInput');
+
+        placeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                placeBtns.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                placeInput.value = this.dataset.value;
+                otherPlaceDiv.style.display = 'none';
+                otherPlaceInput.value = '';
+            });
+        });
+
+        // Custom place button
+        document.getElementById('otherPlaceBtn').addEventListener('click', function() {
+            placeBtns.forEach(b => b.classList.remove('selected'));
+            this.classList.add('selected');
+            otherPlaceDiv.style.display = 'block';
+            otherPlaceInput.focus();
+            placeInput.value = '';
+        });
+
+        // Custom place handler
+        otherPlaceInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                placeBtns.forEach(b => b.classList.remove('selected'));
+                placeInput.value = this.value.trim();
+            } else {
+                placeInput.value = '';
+            }
+        });
+
         // === Form submission ===
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             if (!answerInput.value) {
                 errorMsg.classList.add('show');
+                return;
+            }
+
+            if (!placeInput.value) {
+                document.getElementById('errorPlace').style.display = 'block';
                 return;
             }
 

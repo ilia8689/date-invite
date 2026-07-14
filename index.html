@@ -676,13 +676,20 @@
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
 
-            // Send via FormSubmit with fetch (this worked before)
-            const fd = new FormData();
-            fd.append('Ответ', { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer]);
-            fd.append('Дата', new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
-            fd.append('Куда', state.place);
-            fd.append('Любимый цвет', state.colorName);
-            fetch('https://formsubmit.co/ajax/8c25f4a6fcd03cd60aac705e2315ce5a', { method: 'POST', body: fd }).catch(function(e){});
+            // Send via Web3Forms
+            const fd = {
+                access_key: 'a6445667-081f-4b63-9272-8fba422cb48d',
+                subject: '💌 Ответ на приглашение!',
+                Ответ: { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
+                Дата: new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+                Куда: state.place,
+                'Любимый цвет': state.colorName
+            };
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(fd)
+            }).catch(function(e){});
         });
 
         // === Confetti ===

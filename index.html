@@ -489,20 +489,46 @@
             '😭 сдаюсь', '💔 зачем?', '🎪 цирк', '🚀 догоняй', '💫 ой'
         ];
 
-        function moveNoBtn() {
-            const gr = answersGroup.getBoundingClientRect();
+        // Track mouse over the answersGroup and push noBtn away from cursor
+        answersGroup.addEventListener('mousemove', function(e) {
+            if (state.answer === 'no' || state.answer) return;
             const br = noBtn.getBoundingClientRect();
-            const nx = 5 + Math.random() * Math.max(0, gr.width - br.width - 10);
-            const ny = 5 + Math.random() * Math.max(0, gr.height - br.height - 10);
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = nx + 'px';
-            noBtn.style.top = ny + 'px';
-            noBtn.style.zIndex = '50';
-        }
+            const gr = this.getBoundingClientRect();
+
+            // Margin where button starts to run away (distance from mouse in px)
+            const runDist = 80;
+            // Center of the button
+            const btnCx = br.left - gr.left + br.width / 2;
+            const btnCy = br.top - gr.top + br.height / 2;
+            // Mouse position relative to container
+            const mx = e.clientX - gr.left;
+            const my = e.clientY - gr.top;
+            // Distance from mouse to button center
+            const dx = btnCx - mx;
+            const dy = btnCy - my;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist < runDist && dist > 1) {
+                // Direction AWAY from cursor (normalize and invert)
+                const pushX = -dx / dist;
+                const pushY = -dy / dist;
+                // Push strength — further when closer
+                const strength = (runDist - dist) * 1.2;
+                let newX = btnCx + pushX * strength;
+                let newY = btnCy + pushY * strength;
+                // Clamp inside container
+                newX = Math.max(4, Math.min(newX, gr.width - br.width - 4));
+                newY = Math.max(4, Math.min(newY, gr.height - br.height - 4));
+                noBtn.style.position = 'absolute';
+                noBtn.style.left = newX + 'px';
+                noBtn.style.top = newY + 'px';
+                noBtn.style.zIndex = '50';
+                noBtn.style.transition = 'left 0.15s ease, top 0.15s ease';
+            }
+        });
 
         noBtn.addEventListener('mouseover', function() {
             if (state.answer === 'no' || state.answer) return;
-            moveNoBtn();
             const msg = msgs[Math.min(runawayCount++, msgs.length - 1)];
             this.textContent = msg;
             if (runawayCount % 3 === 0) createMiniConfetti();
@@ -510,19 +536,25 @@
 
         noBtn.addEventListener('click', function(e) {
             e.preventDefault(); e.stopPropagation();
-            moveNoBtn();
             createMiniConfetti();
             const hint = document.createElement('div');
             hint.textContent = '👉 Жми "С удовольствием"! ❤️';
             hint.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-80px);font-size:28px;font-weight:700;color:#d6336c;z-index:200;animation:pulse 0.8s ease-in-out infinite;pointer-events:none;';
             document.body.appendChild(hint);
             setTimeout(() => hint.remove(), 3000);
+            // Also push it one more time
+            const gr = answersGroup.getBoundingClientRect();
+            const br = noBtn.getBoundingClientRect();
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = Math.random() * (gr.width - br.width - 10) + 'px';
+            noBtn.style.top = Math.random() * (gr.height - br.height - 10) + 'px';
         });
 
         document.querySelectorAll('.answer-btn[data-value="yes"], .answer-btn[data-value="maybe"]').forEach(btn => {
             btn.addEventListener('click', function() {
                 noBtn.style.position = ''; noBtn.style.left = '';
                 noBtn.style.top = ''; noBtn.style.zIndex = '';
+                noBtn.style.transition = '';
                 noBtn.textContent = 'Нет';
                 runawayCount = 0;
             });

@@ -673,39 +673,22 @@
             this.disabled = true;
             this.innerHTML = '<span class="spinner"></span> Отправляю...';
 
-            // Show thank you immediately
+            const formData = new FormData();
+            formData.append('_subject', '💌 Ответ на приглашение!');
+            formData.append('_captcha', 'false');
+            formData.append('_template', 'table');
+            formData.append('Ответ', { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer]);
+            formData.append('Дата', new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+            formData.append('Куда', state.place);
+            formData.append('Любимый цвет', state.colorName);
+            formData.append('Страница', window.location.href);
+
+            fetch('https://formsubmit.co/ajax/iliashapovalov53@gmail.com', { method: 'POST', body: formData }).catch(function(){});
+
+            // Show thank you
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
-
-            // Build form data
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://formsubmit.co/8c25f4a6fcd03cd60aac705e2315ce5a';
-            form.target = 'hiddenFrame';
-            form.style.display = 'none';
-
-            const fields = {
-                '_subject': '💌 Ответ на приглашение!',
-                '_captcha': 'false',
-                '_template': 'table',
-                'Ответ': { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
-                'Дата': new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-                'Куда': state.place,
-                'Любимый цвет': state.colorName
-            };
-
-            for (const [name, value] of Object.entries(fields)) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                form.appendChild(input);
-            }
-
-            document.body.appendChild(form);
-            form.submit();
-            setTimeout(() => form.remove(), 3000);
         });
 
         // === Confetti ===

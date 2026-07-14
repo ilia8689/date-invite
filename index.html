@@ -322,19 +322,19 @@
     <div class="card" id="mainCard">
         <!-- Step 1: Main question -->
         <div class="step active" id="step1" data-step="1">
-            <span class="emoji-big">🥰</span>
-            <h1>Ты мне очень нравишься 💕</h1>
-            <p class="subtitle">Я долго думал, как это сказать…<br>Но решил — просто и честно.</p>
+            <span class="emoji-big">💕</span>
+            <h1>Полтора года — только начало</h1>
+            <p class="subtitle">Ты — самое лучшее, что случилось в моей жизни.<br>Давай устроим незабываемый вечер? 🥰</p>
             <div class="divider"></div>
             <div class="photos">
                 <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff9a9e,#fad0c4);display:flex;align-items:center;justify-content:center;font-size:32px;border:3px solid #ffb3c6;">💑</div>
             </div>
             <p style="font-size:18px;font-weight:600;color:#d6336c;margin-bottom:24px;">
-                Сходишь со мной на свидание?
+                Готова к новому свиданию?
             </p>
             <div class="answers" id="answersGroup">
-                <button type="button" class="answer-btn" data-value="yes">❤️ Да!</button>
-                <button type="button" class="answer-btn" data-value="maybe">🤔 Может быть</button>
+                <button type="button" class="answer-btn" data-value="yes">❤️ С удовольствием!</button>
+                <button type="button" class="answer-btn" data-value="maybe">🤔 Заинтриговал</button>
                 <button type="button" class="answer-btn" data-value="no">❌ Нет</button>
             </div>
             <input type="hidden" id="answerInput" value="">
@@ -411,8 +411,8 @@
         <!-- Thank you screen -->
         <div class="hidden" id="thankyou">
             <span class="emoji-big">💖</span>
-            <h2>Спасибо за ответ! ❤️</h2>
-            <p>Я очень ждал его. Ты невероятная!<br>Скоро свяжусь с тобой 🥰</p>
+            <h2>Жду не дождусь! 💕</h2>
+            <p>Скоро увидимся, моя хорошая 🥰<br>Я уже всё придумал ✨</p>
         </div>
     </div>
 
@@ -620,7 +620,7 @@
 
         document.getElementById('toStep5').addEventListener('click', function() {
             // Build summary
-            const answerEmoji = { 'yes': '❤️ Да!', 'maybe': '🤔 Может быть', 'no': '❌ Нет' };
+            const answerEmoji = { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' };
             const dateStr = state.date ? new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' }) : '—';
             document.getElementById('summary').innerHTML = `
                 <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
@@ -648,7 +648,7 @@
             formData.append('_captcha', 'false');
             formData.append('_template', 'table');
             formData.append('_next', 'https://ilia8689.github.io/date-invite/');
-            formData.append('Ответ', { 'yes': '❤️ Да!', 'maybe': '🤔 Может быть', 'no': '❌ Нет' }[state.answer]);
+            formData.append('Ответ', { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer]);
             formData.append('Дата', new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
             formData.append('Куда', state.place);
             formData.append('Любимый цвет', state.colorName);

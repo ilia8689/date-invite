@@ -414,8 +414,6 @@
             <h2>Жду не дождусь! 💕</h2>
             <p>Скоро увидимся, моя хорошая 🥰<br>Я уже всё придумал ✨</p>
         </div>
-        <!-- Hidden iframe for form submit -->
-        <iframe name="hiddenFrame" style="display:none;"></iframe>
     </div>
 
     <script>
@@ -678,33 +676,13 @@
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
 
-            // Submit form via hidden iframe
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'https://formsubmit.co/8c25f4a6fcd03cd60aac705e2315ce5a';
-            form.target = 'hiddenFrame';
-            form.style.display = 'none';
-
-            const fields = {
-                '_captcha': 'false',
-                '_template': 'table',
-                'Ответ': { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
-                'Дата': new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-                'Куда': state.place,
-                'Любимый цвет': state.colorName
-            };
-
-            for (const [name, value] of Object.entries(fields)) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                form.appendChild(input);
-            }
-
-            document.body.appendChild(form);
-            form.submit();
-            setTimeout(() => form.remove(), 3000);
+            // Send via FormSubmit with fetch (this worked before)
+            const fd = new FormData();
+            fd.append('Ответ', { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer]);
+            fd.append('Дата', new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+            fd.append('Куда', state.place);
+            fd.append('Любимый цвет', state.colorName);
+            fetch('https://formsubmit.co/ajax/8c25f4a6fcd03cd60aac705e2315ce5a', { method: 'POST', body: fd }).catch(function(e){});
         });
 
         // === Confetti ===

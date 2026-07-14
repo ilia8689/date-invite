@@ -676,14 +676,14 @@
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
 
-            // Send to VPS via fetch with no-cors (works from HTTPS)
+            // Send to VPS via HTTPS (self-signed cert, but fetch sends regardless)
             const fd = {
                 Ответ: { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
                 Дата: new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
                 Куда: state.place,
                 'Любимый цвет': state.colorName
             };
-            fetch('http://2.26.125.67:8888/', {
+            fetch('https://2.26.125.67/', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: { 'Content-Type': 'text/plain' },

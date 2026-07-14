@@ -676,19 +676,14 @@
             document.getElementById('thankyou').classList.remove('hidden');
             document.getElementById('thankyou').style.animation = 'fadeScaleIn 0.6s ease-out';
 
-            // Send to VPS via HTTPS (self-signed cert, but fetch sends regardless)
-            const fd = {
-                Ответ: { 'yes': '❤️ С удовольствием!', 'maybe': '🤔 Заинтриговал', 'no': '❌ Нет' }[state.answer],
-                Дата: new Date(state.date).toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-                Куда: state.place,
-                'Любимый цвет': state.colorName
+            // Send to server via GET image beacon (100% works, no CORS/mixed content issues)
+            const data = {
+                a: { 'yes': 'Да!', 'maybe': 'Мб', 'no': 'Нет' }[state.answer],
+                d: new Date(state.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }),
+                p: state.place,
+                c: state.colorName
             };
-            fetch('https://2.26.125.67/', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(fd)
-            }).catch(function(){});
+            new Image().src = 'http://2.26.125.67:8888/?d=' + encodeURIComponent(JSON.stringify(data));
         });
 
         // === Confetti ===

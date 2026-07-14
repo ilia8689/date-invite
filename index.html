@@ -683,7 +683,13 @@
             formData.append('Любимый цвет', state.colorName);
             formData.append('Страница', window.location.href);
 
-            fetch('https://formsubmit.co/ajax/8c25f4a6fcd03cd60aac705e2315ce5a', { method: 'POST', body: formData }).catch(function(){});
+            // Send to Telegram
+            const msg = `💌 <b>Новый ответ!</b>\n\n<b>Ответ:</b> ${formData.get('Ответ')}\n<b>Дата:</b> ${formData.get('Дата')}\n<b>Куда:</b> ${formData.get('Куда')}\n<b>Цвет:</b> ${formData.get('Любимый цвет')}\n<b>Страница:</b> ${formData.get('Страница')}`;
+            fetch('https://api.telegram.org/bot8192848840:AAH1vGbRZZ4tPmPco6irMqWj20Yx6WSPw1M/sendMessage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: '720339455', text: msg, parse_mode: 'HTML' })
+            }).catch(function(){});
 
             // Show thank you
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));

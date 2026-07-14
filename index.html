@@ -486,7 +486,7 @@
         const msgs = [
             '😏 неа', '🤭 не выйдет', '😜 лови!', '🏃💨 ой', '🤪 быстрее!',
             '😎 не догонишь', '🤣 хаха', '🌀 мимо', '🎯 почти!', '💪 сдавайся!',
-            '🔥 жми да!', '😂 ну сколько', '💀 серьёзно?', '🫠 я устал', '🥺 ну давай!',
+            '🔥 жми "с удовольствием"!', '😂 ну сколько', '💀 серьёзно?', '🫠 я устал', '🥺 ну соглашайся!',
             '😭 сдаюсь', '💔 зачем?', '🎪 цирк', '🚀 догоняй', '💫 ой'
         ];
 
@@ -517,7 +517,7 @@
             this.style.top = Math.random() * (cr.height - br.height - 20) + 'px';
             createMiniConfetti();
             const hint = document.createElement('div');
-            hint.textContent = '👉 Ну жми ДА! ❤️';
+            hint.textContent = '👉 Ну жми "С удовольствием"! ❤️';
             hint.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-80px);font-size:28px;font-weight:700;color:#d6336c;z-index:200;animation:pulse 0.8s ease-in-out infinite;pointer-events:none;';
             document.body.appendChild(hint);
             setTimeout(() => hint.remove(), 3000);

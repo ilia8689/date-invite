@@ -332,11 +332,11 @@
             <p style="font-size:18px;font-weight:600;color:#d6336c;margin-bottom:24px;">
                 Готова к новому свиданию?
             </p>
-            <div class="answers" id="answersGroup">
-                <button type="button" class="answer-btn" data-value="yes">❤️ С удовольствием!</button>
-                <button type="button" class="answer-btn" data-value="maybe">🤔 Заинтриговал</button>
-                <button type="button" class="answer-btn" data-value="no">❌ Нет</button>
-            </div>
+                <div class="answers" id="answersGroup" style="position:relative;min-height:100px;">
+                    <button type="button" class="answer-btn" data-value="yes">❤️ С удовольствием!</button>
+                    <button type="button" class="answer-btn" data-value="maybe">🤔 Заинтриговал</button>
+                    <button type="button" class="answer-btn" data-value="no">❌ Нет</button>
+                </div>
             <input type="hidden" id="answerInput" value="">
             <div class="error-msg" id="errorStep1">Выбери ответ ❤️</div>
             <button class="next-btn" id="toStep2" disabled>Дальше ✨</button>
@@ -481,7 +481,6 @@
 
         // === Runaway "Нет" button ===
         const noBtn = document.querySelector('.answer-btn[data-value="no"]');
-        const card = document.querySelector('.card');
         let runawayCount = 0;
         const msgs = [
             '😏 неа', '🤭 не выйдет', '😜 лови!', '🏃💨 ой', '🤪 быстрее!',
@@ -490,19 +489,20 @@
             '😭 сдаюсь', '💔 зачем?', '🎪 цирк', '🚀 догоняй', '💫 ой'
         ];
 
+        function moveNoBtn() {
+            const gr = answersGroup.getBoundingClientRect();
+            const br = noBtn.getBoundingClientRect();
+            const nx = 5 + Math.random() * Math.max(0, gr.width - br.width - 10);
+            const ny = 5 + Math.random() * Math.max(0, gr.height - br.height - 10);
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = nx + 'px';
+            noBtn.style.top = ny + 'px';
+            noBtn.style.zIndex = '50';
+        }
+
         noBtn.addEventListener('mouseover', function() {
-            if (state.answer === 'no') return;
-            const cr = card.getBoundingClientRect();
-            const br = this.getBoundingClientRect();
-            const mx = cr.width - br.width - 20;
-            const my = cr.height - br.height - 20;
-            let nx, ny;
-            do { nx = Math.random() * mx; ny = Math.random() * my; }
-            while (Math.abs(nx - 10) < 50 && Math.abs(ny - 100) < 50);
-            this.style.position = 'absolute';
-            this.style.left = nx + 'px';
-            this.style.top = ny + 'px';
-            this.style.zIndex = '50';
+            if (state.answer === 'no' || state.answer) return;
+            moveNoBtn();
             const msg = msgs[Math.min(runawayCount++, msgs.length - 1)];
             this.textContent = msg;
             if (runawayCount % 3 === 0) createMiniConfetti();
@@ -510,14 +510,10 @@
 
         noBtn.addEventListener('click', function(e) {
             e.preventDefault(); e.stopPropagation();
-            const cr = card.getBoundingClientRect();
-            const br = this.getBoundingClientRect();
-            this.style.position = 'absolute';
-            this.style.left = Math.random() * (cr.width - br.width - 20) + 'px';
-            this.style.top = Math.random() * (cr.height - br.height - 20) + 'px';
+            moveNoBtn();
             createMiniConfetti();
             const hint = document.createElement('div');
-            hint.textContent = '👉 Ну жми "С удовольствием"! ❤️';
+            hint.textContent = '👉 Жми "С удовольствием"! ❤️';
             hint.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-80px);font-size:28px;font-weight:700;color:#d6336c;z-index:200;animation:pulse 0.8s ease-in-out infinite;pointer-events:none;';
             document.body.appendChild(hint);
             setTimeout(() => hint.remove(), 3000);
@@ -527,7 +523,7 @@
             btn.addEventListener('click', function() {
                 noBtn.style.position = ''; noBtn.style.left = '';
                 noBtn.style.top = ''; noBtn.style.zIndex = '';
-                noBtn.textContent = '❌ Нет';
+                noBtn.textContent = 'Нет';
                 runawayCount = 0;
             });
         });
